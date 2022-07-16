@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const { Client, Collection, Intents, Message } = require('discord.js');
 // const { token } = require('./config.json');
 const welcome = require('./membership/welcome.js');
+const ruleReaction = require('./membership/rule-reaction.js');
 require('dotenv').config();
 const { logCommand } = require('./tools/log-command.js')
 const channelID = '995685262061482106' //welcome channel
@@ -13,7 +14,8 @@ const targetChannelID = '995685262061482107' //rules and info
 const raceControlID = '995691415873003621' //race-control 
 
 // Create a new client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS,] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'], });
 
 // Create a collection of commands
 client.commands = new Collection();
@@ -32,6 +34,7 @@ for (const file of commandFiles) {
 client.once('ready', () => {
   console.log(`Logged in as ${client.user.username}`);
   welcome(client)
+  ruleReaction(client)
 });
 
 client.on('interactionCreate', async interaction => {
